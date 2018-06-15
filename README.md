@@ -1,2 +1,2 @@
 # telego
-Go framework for Telegram bots
+[WIP] Go framework for Telegram bots
