@@ -337,4 +337,60 @@ type (
 		MessageId          int  `json:"message_id"`
 		InlineMessageId    int  `json:"inline_message_id"`
 	}
+
+	Update struct {
+		UpdateID           int                 `json:"update_id"`
+		Message            *Message            `json:"message"`
+		EditedMessage      *Message            `json:"edited_message"`
+		ChannelPost        *Message            `json:"channel_post"`
+		EditedChannelPost  *Message            `json:"edited_channel_post"`
+		InlineQuery        *InlineQuery        `json:"inline_query"`
+		ChosenInlineResult *ChosenInlineResult `json:"chosen_inline_result"`
+		CallbackQuery      *CallbackQuery      `json:"callback_query"`
+		ShippingQuery      *ShippingQuery      `json:"shipping_query"`
+		PreCheckoutQuery   *PreCheckoutQuery   `json:"pre_checkout_query"`
+	}
+
+	InlineQuery struct {
+		ID       string    `json:"id"`
+		From     *User     `json:"from"`
+		Location *Location `json:"location"`
+		Query    string    `json:"query"`
+		Offset   string    `json:"offset"`
+	}
+
+	ChosenInlineResult struct {
+		ID       string    `json:"id"`
+		From     *User     `json:"from"`
+		Location *Location `json:"location"`
+		Query    string    `json:"query"`
+		Offset   string    `json:"offset"`
+	}
+
+	ShippingQuery struct {
+		ID              string           `json:"id"`
+		From            *User            `json:"from"`
+		InvoicePayload  string           `json:"invoice_payload"`
+		ShippingAddress *ShippingAddress `jsong:"shipping_address"`
+	}
+
+	PreCheckoutQuery struct {
+		ID               string     `json:"id"`
+		From             *User      `json:"from"`
+		Currency         string     `json:"currency"`
+		TotalAmount      int        `json:"total_amount"`
+		InvoicePayload   string     `json:"invoice_payload"`
+		ShippingOptionID string     `json:"shipping_option_id"`
+		OrderInfo        *OrderInfo `json:"order_info"`
+	}
+
+	MessageOut struct {
+		ChatID                int         `json:"chat_id"`
+		Text                  string      `json:"text"`
+		ParseMode             string      `json:"parse_mode"`
+		DisableWebPagePreview bool        `json:"disable_web_page_preview,omitempty"`
+		DisableNotification   bool        `json:"disable_notificatio,omitemptyn"`
+		ReplyToMessageID      int         `json:"reply_to_message_id,omitempty"`
+		ReplyMarkup           interface{} `json:"reply_markup,omitempty"`
+	}
 )
