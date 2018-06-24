@@ -57,6 +57,16 @@ func (c *TelegramClient) SendMessageText(message string, chatID int) error {
 	return c.SendMessage(mo)
 }
 
+func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) error {
+	mo := MessageOut{
+		Text:             message,
+		ChatID:           chatID,
+		ReplyToMessageID: messageID,
+	}
+
+	return c.SendMessage(mo)
+}
+
 func (c *TelegramClient) SendMessage(m MessageOut) error {
 	b, e := json.Marshal(m)
 
