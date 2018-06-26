@@ -71,13 +71,13 @@ func (c *TelegramClient) SendMessage(m MessageOut) error {
 	b, e := json.Marshal(m)
 
 	if e != nil {
-		panic(e)
+		return e
 	}
 
 	ep := fmt.Sprintf("%v%v%v", telegramAPI, c.AccessToken, sendMessage)
 	resp, err := http.Post(ep, "application/json", bytes.NewReader(b))
 	if err != nil {
-		fmt.Println(e)
+		return e
 	}
 	defer resp.Body.Close()
 
