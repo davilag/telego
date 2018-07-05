@@ -1,5 +1,6 @@
 package main
 
+// Main loop which is goint to be listening for updates.
 func (t *Telego) Listen() {
 	var offset int
 	for {

@@ -24,6 +24,8 @@ type TelegramClient struct {
 	AccessToken string
 }
 
+// Returns a list of updates hitting the getUpdates method
+// see https://core.telegram.org/bots/api#getupdates
 func (c *TelegramClient) getUpdates(offset int) []Update {
 	ep := fmt.Sprintf("%v%v%v%v", telegramAPI, c.AccessToken, getUpdates, offset)
 	r, e := http.Get(ep)
@@ -49,6 +51,7 @@ func (c *TelegramClient) getUpdates(offset int) []Update {
 	return *result
 }
 
+// It sends the given message to the given chat ID
 func (c *TelegramClient) SendMessageText(message string, chatID int) error {
 	mo := MessageOut{
 		Text:   message,
@@ -57,6 +60,7 @@ func (c *TelegramClient) SendMessageText(message string, chatID int) error {
 	return c.SendMessage(mo)
 }
 
+// Send a message to a chat replying to the indicated message.
 func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) error {
 	mo := MessageOut{
 		Text:             message,
@@ -67,6 +71,7 @@ func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID in
 	return c.SendMessage(mo)
 }
 
+// Sends a message with the filled MessageOut object.
 func (c *TelegramClient) SendMessage(m MessageOut) error {
 	b, e := json.Marshal(m)
 
