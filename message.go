@@ -4,6 +4,13 @@ import "github.com/davilag/telego/kind"
 
 // Returns the message kind based on the parameters that it has
 func (m *Message) GetMessageKind() kind.MessageType {
+
+	if m.Entities != nil {
+		if m.getBotCommandEntity() != nil {
+			return kind.Command
+		}
+	}
+
 	if m.Location != nil {
 		return kind.Location
 	}
@@ -19,12 +26,15 @@ func (m *Message) GetMessageKind() kind.MessageType {
 	if m.Video != nil {
 		return kind.Video
 	}
-
-	if m.Entities != nil {
-		if m.getBotCommandEntity() != nil {
-			return kind.Command
-		}
+	if m.Voice != nil {
+		return kind.VoiceMessage
 	}
+	if m.VideoNote != nil {
+		return kind.VideoNote
+	}
+
+	// If we haven't identified the type of the message, we treat it as
+	// a plain message.
 	return kind.Text
 }
 
