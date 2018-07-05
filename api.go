@@ -2,13 +2,13 @@ package main
 
 type (
 	TelegramResponse struct {
-		Ok     bool        `json:"ok"`
+		Ok     *bool       `json:"ok"`
 		Result interface{} `json:"result"`
 	}
 
 	User struct {
 		ID           int    `json:"id"`
-		IsBot        bool   `json:"is_bot"`
+		IsBot        *bool  `json:"is_bot"`
 		FirstName    string `json:"first_name"`
 		LastName     string `json:"last_name"`
 		Username     string `json:"username"`
@@ -22,55 +22,55 @@ type (
 		Username                 string     `json:"username"`
 		FirstName                string     `json:"first_name"`
 		LastName                 string     `json:"last_name"`
-		AllMembersAdministrators bool       `json:"all_members_are_administrators"`
+		AllMembersAdministrators *bool      `json:"all_members_are_administrators"`
 		Photo                    *ChatPhoto `json:"photo"`
 		Description              string     `json:"description"`
 		InviteLink               string     `json:"invite_link"`
 		PinnedMessage            *Message   `json:"pinned_message"`
 		StickerSetName           string     `json:"sticker_set_name"`
-		CanSetSticketSet         bool       `json:"can_set_sticker_set"`
+		CanSetSticketSet         *bool      `json:"can_set_sticker_set"`
 	}
 
 	Message struct {
 		ID                    int                `json:"message_id"`
 		From                  *User              `json:"from"`
 		Date                  int64              `json:"date"`
-		Chat                  *Chat              `json:"chat"`
-		ForwardFrom           *User              `json:"forward_from"`
-		ForwardFromChat       *Chat              `json:"forward_from_chat"`
+		Chat                  *Chat              `json:"chat,omitempty"`
+		ForwardFrom           *User              `json:"forward_from,omitempty"`
+		ForwardFromChat       *Chat              `json:"forward_from_chat,omitempty"`
 		ForwardFromMessageID  int                `json:"forward_from_message_id"`
 		ForwardSignature      string             `json:"forward_signature"`
 		ForwardDate           int64              `json:"forward_date"`
-		ReplyToMessage        *Message           `json:"reply_to_message"`
+		ReplyToMessage        *Message           `json:"reply_to_message,omitempty"`
 		EditDate              int64              `json:"edit_date"`
 		MediaGroupID          string             `json:"media_group_id"`
 		AuthorSignature       string             `json:"author_signature"`
 		Text                  string             `json:"text"`
-		Entities              *[]MessageEntity   `json:"entities"`
-		CaptionEntities       *[]MessageEntity   `json:"caption_entities"`
-		Audio                 *Audio             `json:"audio"`
-		Document              *Document          `json:"document"`
-		Game                  *Game              `json:"game"`
-		Photo                 *[]PhotoSize       `json:"photo"`
-		Sticker               *Sticker           `json:"sticker"`
-		Video                 *Video             `json:"video"`
-		Voice                 *Voice             `json:"voice"`
-		VideoNote             *VideoNote         `json:"video_note"`
-		Caption               string             `json:"caption"`
-		Contact               *Contact           `json:"contact"`
-		Location              *Location          `json:"location"`
-		Venue                 *Venue             `json:"venue"`
-		NewChatMembers        *[]User            `json:"new_chat_members"`
-		NewChatMember         *User              `json:"new_chat_member"`
-		LeftChatMember        *User              `json:"left_chat_member"`
+		Entities              *[]MessageEntity   `json:"entities,omitempty"`
+		CaptionEntities       *[]MessageEntity   `json:"caption_entities,omitempty"`
+		Audio                 *Audio             `json:"audio,omitempty"`
+		Document              *Document          `json:"document,omitempty"`
+		Game                  *Game              `json:"game,omitempty"`
+		Photo                 *[]PhotoSize       `json:"photo,omitempty"`
+		Sticker               *Sticker           `json:"sticker,omitempty"`
+		Video                 *Video             `json:"video,omitempty"`
+		Voice                 *Voice             `json:"voice,omitempty"`
+		VideoNote             *VideoNote         `json:"video_note,omitempty"`
+		Caption               string             `json:"caption,omitempty"`
+		Contact               *Contact           `json:"contact,omitempty"`
+		Location              *Location          `json:"location,omitempty"`
+		Venue                 *Venue             `json:"venue,omitempty"`
+		NewChatMembers        *[]User            `json:"new_chat_members,omitempty"`
+		NewChatMember         *User              `json:"new_chat_member,omitempty"`
+		LeftChatMember        *User              `json:"left_chat_member,omitempty"`
 		NewChatTitle          string             `json:"new_chat_title"`
 		NewChatPhoto          *[]PhotoSize       `json:"new_chat_photo"`
-		DeleteChatPhoto       bool               `json:"delete_chat_photo"`
-		GroupChatCreated      bool               `json:"group_chat_created"`
-		SuperGroupChatCreated bool               `json:"supergroup_chat_created"`
-		ChannelChatCreated    bool               `json:"channel_chat_created"`
-		MigrateToChatId       int                `json:"migrate_to_chat_id"`
-		MigrateFromChatId     int                `json:"migrate_from_chat_id"`
+		DeleteChatPhoto       *bool              `json:"delete_chat_photo"`
+		GroupChatCreated      *bool              `json:"group_chat_created"`
+		SuperGroupChatCreated *bool              `json:"supergroup_chat_created"`
+		ChannelChatCreated    *bool              `json:"channel_chat_created"`
+		MigrateToChatID       int                `json:"migrate_to_chat_id,omitempty"`
+		MigrateFromChatID     int                `json:"migrate_from_chat_id,omitempty"`
 		PinnedMessage         *Message           `json:"pinned_message"`
 		Invoice               *Invoice           `json:"invoice"`
 		SuccessfulPayment     *SuccessfulPayment `json:"successful_payment"`
@@ -81,7 +81,7 @@ type (
 		Type   string `json:"type"`
 		Offset int    `json:"offset"`
 		Length int    `json:"length"`
-		Url    string `json:"url"`
+		URL    string `json:"url"`
 		User   *User  `json:"user"`
 	}
 
@@ -161,20 +161,20 @@ type (
 
 	ReplyKeyboardMarkup struct {
 		Keyboard        *KeyboardButton `json:"keyboard"`
-		ResizeKeyboard  bool            `json:"resize_keyboard"`
-		OneTimeKeyboard bool            `json:"one_time_keyboard"`
-		Selective       bool            `json:"selective"`
+		ResizeKeyboard  *bool           `json:"resize_keyboard"`
+		OneTimeKeyboard *bool           `json:"one_time_keyboard"`
+		Selective       *bool           `json:"selective"`
 	}
 
 	KeyboardButton struct {
 		Text            string `json:"text"`
-		RequestContact  bool   `json:"request_contact"`
-		RequestLocation bool   `json:"request_location"`
+		RequestContact  *bool  `json:"request_contact"`
+		RequestLocation *bool  `json:"request_location"`
 	}
 
 	ReplyKeyboardRemove struct {
-		RemoveKeyboard bool `json:"remove_keyboard"`
-		Selective      bool `json:"selective"`
+		RemoveKeyboard *bool `json:"remove_keyboard"`
+		Selective      *bool `json:"selective"`
 	}
 
 	InlineKeyboardMarkup struct {
@@ -188,7 +188,7 @@ type (
 		SwitchInlineQuery            string        `json:"switch_inline_query"`
 		SwitchInlineQueryCurrentChat string        `json:"switch_inline_query_current_chat"`
 		CallbackGame                 *CallbackGame `json:"callback_game"`
-		Pay                          bool          `json:"pay"`
+		Pay                          *bool         `json:"pay"`
 	}
 
 	CallbackQuery struct {
@@ -202,8 +202,8 @@ type (
 	}
 
 	ForceReply struct {
-		ForceReply bool `json:"force_reply"`
-		Selective  bool `json:"selective"`
+		ForceReply *bool `json:"force_reply"`
+		Selective  *bool `json:"selective"`
 	}
 
 	ChatPhoto struct {
@@ -215,19 +215,19 @@ type (
 		User                  *User  `json:"user"`
 		Status                string `json:"status"`
 		UntilDate             int64  `json:"until_date,omitempty"`
-		CanBeEdited           bool   `json:"can_be_edited,omitempty"`
-		CanChangeInfo         bool   `json:"can_change_info,omitempty"`
-		CanPostMessages       bool   `json:"can_post_messages,omitempty"`
-		CanEditMessages       bool   `json:"can_edit_messages,omitempty"`
-		CanDeleteMessages     bool   `json:"can_delete_messages,omitempty"`
-		CanInviteUsers        bool   `json:"can_invite_users,omitempty"`
-		CanRestrictMembers    bool   `json:"can_restrict_members,omitempty"`
-		CanPinMessages        bool   `json:"can_pin_messages,omitempty"`
-		CanPromoteMembers     bool   `json:"can_promote_members,omitempty"`
-		CanSendMessages       bool   `json:"can_send_messages,omitempty"`
-		CanSendMediaMessages  bool   `json:"can_send_media_messages,omitempty"`
-		CanSendOtherMessages  bool   `json:"can_send_other_messages,omitempty"`
-		CanAddWebPagePreviews bool   `json:"can_add_web_page_previews,omitempty"`
+		CanBeEdited           *bool  `json:"can_be_edited,omitempty"`
+		CanChangeInfo         *bool  `json:"can_change_info,omitempty"`
+		CanPostMessages       *bool  `json:"can_post_messages,omitempty"`
+		CanEditMessages       *bool  `json:"can_edit_messages,omitempty"`
+		CanDeleteMessages     *bool  `json:"can_delete_messages,omitempty"`
+		CanInviteUsers        *bool  `json:"can_invite_users,omitempty"`
+		CanRestrictMembers    *bool  `json:"can_restrict_members,omitempty"`
+		CanPinMessages        *bool  `json:"can_pin_messages,omitempty"`
+		CanPromoteMembers     *bool  `json:"can_promote_members,omitempty"`
+		CanSendMessages       *bool  `json:"can_send_messages,omitempty"`
+		CanSendMediaMessages  *bool  `json:"can_send_media_messages,omitempty"`
+		CanSendOtherMessages  *bool  `json:"can_send_other_messages,omitempty"`
+		CanAddWebPagePreviews *bool  `json:"can_add_web_page_previews,omitempty"`
 	}
 
 	ResponseParameters struct {
@@ -250,7 +250,7 @@ type (
 		Width             int    `json:"width"`
 		Height            int    `json:"height"`
 		Duration          int    `json:"duration"`
-		SupportsStreaming bool   `json:"supports_streaming"`
+		SupportsStreaming *bool  `json:"supports_streaming"`
 	}
 
 	Game struct {
@@ -284,7 +284,7 @@ type (
 	StickerSet struct {
 		Name          string     `json:"name"`
 		Title         string     `json:"title"`
-		ContainsMasks bool       `json:"contains_masks"`
+		ContainsMasks *bool      `json:"contains_masks"`
 		Stickers      *[]Sticker `json:"stickers"`
 	}
 
@@ -329,13 +329,13 @@ type (
 	}
 
 	CallbackGame struct {
-		UserID             int  `json:"user_id"`
-		Score              int  `json:"score"`
-		Force              bool `json:"force"`
-		DisableEditMessage bool `json:"disable_edit_message"`
-		ChatID             int  `json:"chat_id"`
-		MessageId          int  `json:"message_id"`
-		InlineMessageId    int  `json:"inline_message_id"`
+		UserID             int   `json:"user_id"`
+		Score              int   `json:"score"`
+		Force              *bool `json:"force"`
+		DisableEditMessage *bool `json:"disable_edit_message"`
+		ChatID             int   `json:"chat_id"`
+		MessageId          int   `json:"message_id"`
+		InlineMessageId    int   `json:"inline_message_id"`
 	}
 
 	Update struct {
@@ -388,8 +388,8 @@ type (
 		ChatID                int         `json:"chat_id"`
 		Text                  string      `json:"text"`
 		ParseMode             string      `json:"parse_mode"`
-		DisableWebPagePreview bool        `json:"disable_web_page_preview,omitempty"`
-		DisableNotification   bool        `json:"disable_notificatio,omitemptyn"`
+		DisableWebPagePreview *bool       `json:"disable_web_page_preview,omitempty"`
+		DisableNotification   *bool       `json:"disable_notificatio,omitemptyn"`
 		ReplyToMessageID      int         `json:"reply_to_message_id,omitempty"`
 		ReplyMarkup           interface{} `json:"reply_markup,omitempty"`
 	}
