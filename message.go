@@ -3,7 +3,7 @@ package main
 import "github.com/davilag/telego/kind"
 
 // Returns the message kind based on the parameters that it has
-func (m *Message) GetMessageKind() kind.MessageType {
+func (m *Message) GetKind() kind.Kind {
 
 	if m.Entities != nil {
 		if m.getBotCommandEntity() != nil {
