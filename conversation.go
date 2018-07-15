@@ -42,18 +42,26 @@ func (c *Conversation) executeUpdate(u Update) FlowStep {
 // Creates a session which is going to be listening to new updates in the c.channel.
 // It's going to send a message with it chat id into the c.exit channel when it times out
 // or the next step of the flow is nil
-func (c *Conversation) createSession() {
+func (c *Conversation) createSession(requeueChan chan Update) {
+	requeue := false
 	for {
 		select {
 		case u := <-c.channel:
+			if u.UpdateID == 0 {
+				return
+			}
+			if requeue {
+				requeueChan <- u
+				break
+			}
 			c.Flow.ActualStep = c.executeUpdate(u)
 			if c.Flow.ActualStep == nil {
 				c.endSession()
-				return
+				requeue = true
 			}
 		case <-time.After(time.Duration(c.Flow.TimeToLive) * time.Second):
 			c.endSession()
-			return
+			requeue = true
 		}
 	}
 }

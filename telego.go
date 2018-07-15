@@ -68,7 +68,7 @@ func (t *Telego) Listen() {
 	for fetch {
 		us := client.getUpdates(offset)
 		for _, u := range us {
-			t.updates <- u
+			telego.updates <- u
 			offset = u.UpdateID + 1
 		}
 	}

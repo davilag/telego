@@ -3,6 +3,7 @@ package main
 type sessionManager struct {
 	update   chan Update         // Update channel which expects new messages from Telegram
 	exit     chan int            // Exit channel where it expects messages from the conversations to finish them
+	requeue  chan Update         // Channel to receive requeue messages
 	channels map[int]chan Update // Map from ChatID to channel which stores the channel to communicate with live sessions.
 }
 
@@ -13,8 +14,9 @@ type sessionManager struct {
 // conversations to finish the session.
 func NewSessionManager() (chan Update, chan int) {
 	s := sessionManager{
-		update:   make(chan Update),
-		exit:     make(chan int),
+		update:   make(chan Update, 100),
+		exit:     make(chan int, 100),
+		requeue:  make(chan Update, 100),
 		channels: map[int]chan Update{},
 	}
 	go s.manageChannels()
@@ -30,12 +32,16 @@ func (s *sessionManager) manageChannels() {
 		case cId := <-s.exit:
 			s.doExit(cId)
 			continue
+		case u := <-s.requeue:
+			s.manageUpdate(u)
 		default:
 		}
 		select {
 		case cId := <-s.exit:
 			s.doExit(cId)
 			continue
+		case u := <-s.requeue:
+			s.manageUpdate(u)
 		case u := <-s.update:
 			s.manageUpdate(u)
 		}
@@ -117,7 +123,7 @@ func (s *sessionManager) startConversation(u Update) chan Update {
 	if cu == nil {
 		go c.executeUpdate(u)
 	} else {
-		go c.createSession()
+		go c.createSession(s.requeue)
 	}
 	return cu
 }
