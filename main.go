@@ -11,6 +11,7 @@ func main() {
 	telego := Initialise(os.Getenv("APIToken"))
 	telego.AddCommandHanlderSession("start", firstStep, 30)
 	telego.AddKindHandler(kind.Location, locationHandler)
+	telego.SetupMetrics()
 	telego.Listen()
 }
 
@@ -29,5 +30,7 @@ func secondStep(u Update, c Conversation) FlowStep {
 
 func locationHandler(u Update, c Conversation) FlowStep {
 	c.ReplyToMessage("That's a location huh?", u.Message.ID)
+	fmt.Println("Latitude", u.Message.Location.Latitude)
+	fmt.Println("Longitude", u.Message.Location.Longitude)
 	return nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/davilag/telego/kind"
+	"github.com/davilag/telego/metrics"
 )
 
 type Telego struct {
@@ -68,8 +69,13 @@ func (t *Telego) Listen() {
 	for fetch {
 		us := client.getUpdates(offset)
 		for _, u := range us {
+			metrics.MessageReceived()
 			telego.updates <- u
 			offset = u.UpdateID + 1
 		}
 	}
+}
+
+func (t *Telego) SetupMetrics() {
+	go metrics.SetupMetrics()
 }

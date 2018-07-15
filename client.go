@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/davilag/telego/metrics"
 )
 
 const (
@@ -92,6 +94,6 @@ func (c *TelegramClient) SendMessage(m MessageOut) error {
 	if !body.Ok {
 		return errors.New(body.Description)
 	}
-
+	metrics.MessageSent()
 	return nil
 }

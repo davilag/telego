@@ -1,6 +1,10 @@
 package main
 
-import "time"
+import (
+	"time"
+
+	"github.com/davilag/telego/metrics"
+)
 
 // Abstraction to make send messages to an specific chat.
 type Conversation struct {
@@ -43,6 +47,7 @@ func (c *Conversation) executeUpdate(u Update) FlowStep {
 // It's going to send a message with it chat id into the c.exit channel when it times out
 // or the next step of the flow is nil
 func (c *Conversation) createSession(requeueChan chan Update) {
+	metrics.SessionStarted()
 	requeue := false
 	for {
 		select {
@@ -69,4 +74,5 @@ func (c *Conversation) createSession(requeueChan chan Update) {
 // Ends the session sending a message with the chat Id to the exit channel
 func (c *Conversation) endSession() {
 	c.exit <- c.ChatID
+	metrics.SessionFinished()
 }
