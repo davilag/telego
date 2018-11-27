@@ -163,21 +163,21 @@ type (
 	}
 
 	ReplyKeyboardMarkup struct {
-		Keyboard        *KeyboardButton `json:"keyboard"`
-		ResizeKeyboard  *bool           `json:"resize_keyboard"`
-		OneTimeKeyboard *bool           `json:"one_time_keyboard"`
-		Selective       *bool           `json:"selective"`
+		Keyboard        [][]KeyboardButton `json:"keyboard"`
+		ResizeKeyboard  *bool              `json:"resize_keyboard,omitempty"`
+		OneTimeKeyboard *bool              `json:"one_time_keyboard,omitempty"`
+		Selective       *bool              `json:"selective,omitempty"`
 	}
 
 	KeyboardButton struct {
 		Text            string `json:"text"`
-		RequestContact  *bool  `json:"request_contact"`
-		RequestLocation *bool  `json:"request_location"`
+		RequestContact  *bool  `json:"request_contact,omitempty"`
+		RequestLocation *bool  `json:"request_location,omitempty"`
 	}
 
 	ReplyKeyboardRemove struct {
-		RemoveKeyboard *bool `json:"remove_keyboard"`
-		Selective      *bool `json:"selective"`
+		RemoveKeyboard *bool `json:"remove_keyboard,omitempty"`
+		Selective      *bool `json:"selective,omitempty"`
 	}
 
 	InlineKeyboardMarkup struct {
