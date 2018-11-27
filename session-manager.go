@@ -7,7 +7,7 @@ type sessionManager struct {
 	channels map[int]chan Update // Map from ChatID to channel which stores the channel to communicate with live sessions.
 }
 
-// Initialises a session manager which is going to manage the sessions
+// NewSessionManager initialises a session manager which is going to manage the sessions
 // by chat id. It returns 2 channels, the first one is the channel where
 // the session manager expects new updates from telegram and the second
 // channel is the channel where the manager expects a message from the
@@ -29,16 +29,16 @@ func NewSessionManager() (chan Update, chan int) {
 func (s *sessionManager) manageChannels() {
 	for {
 		select {
-		case cId := <-s.exit:
-			s.doExit(cId)
+		case cID := <-s.exit:
+			s.doExit(cID)
 			continue
 		case u := <-s.requeue:
 			s.manageUpdate(u)
 		default:
 		}
 		select {
-		case cId := <-s.exit:
-			s.doExit(cId)
+		case cID := <-s.exit:
+			s.doExit(cID)
 			continue
 		case u := <-s.requeue:
 			s.manageUpdate(u)
@@ -50,8 +50,8 @@ func (s *sessionManager) manageChannels() {
 
 // Method to manage an update comming from the telegram API
 func (s *sessionManager) manageUpdate(u Update) {
-	chatId := u.Message.Chat.ID
-	v, ok := s.channels[chatId]
+	chatID := u.Message.Chat.ID
+	v, ok := s.channels[chatID]
 
 	if !ok {
 		v = s.startConversation(u)
@@ -61,9 +61,9 @@ func (s *sessionManager) manageUpdate(u Update) {
 	}
 }
 
-func (s *sessionManager) doExit(cId int) {
-	close(s.channels[cId])
-	delete(s.channels, cId)
+func (s *sessionManager) doExit(cID int) {
+	close(s.channels[cID])
+	delete(s.channels, cID)
 }
 
 // Given a message, it checks if it contains any command

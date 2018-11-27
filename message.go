@@ -2,7 +2,7 @@ package main
 
 import "github.com/davilag/telego/kind"
 
-// Returns the message kind based on the parameters that it has
+// GetKind Returns the message kind based on the parameters that it has
 func (m *Message) GetKind() kind.Kind {
 
 	if m.Entities != nil {
@@ -53,7 +53,7 @@ func (m *Message) getBotCommandEntity() *MessageEntity {
 	return nil
 }
 
-// From the Message.Text, it retrieves the command
+// GetCommand retrieves the command from the Message.Text field
 func (m *Message) GetCommand() string {
 	me := m.getBotCommandEntity()
 

@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"github.com/davilag/telego/metrics"
 )
 
 const (
@@ -22,6 +20,7 @@ type response struct {
 	Description string `json:"description"`
 }
 
+// TelegramClient manages the connection to the Telegram API
 type TelegramClient struct {
 	AccessToken string
 }
@@ -53,7 +52,7 @@ func (c *TelegramClient) getUpdates(offset int) []Update {
 	return *result
 }
 
-// It sends the given message to the given chat ID
+// SendMessageText sends the given message to the given chat ID
 func (c *TelegramClient) SendMessageText(message string, chatID int) error {
 	mo := MessageOut{
 		Text:   message,
@@ -62,7 +61,7 @@ func (c *TelegramClient) SendMessageText(message string, chatID int) error {
 	return c.SendMessage(mo)
 }
 
-// Send a message to a chat replying to the indicated message.
+// ReplyToMessage sends a message to a chat replying to the indicated message.
 func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) error {
 	mo := MessageOut{
 		Text:             message,
@@ -73,7 +72,7 @@ func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID in
 	return c.SendMessage(mo)
 }
 
-// Sends a message with the filled MessageOut object.
+// SendMessage sends a message with the filled MessageOut object.
 func (c *TelegramClient) SendMessage(m MessageOut) error {
 	b, e := json.Marshal(m)
 
@@ -94,6 +93,6 @@ func (c *TelegramClient) SendMessage(m MessageOut) error {
 	if !body.Ok {
 		return errors.New(body.Description)
 	}
-	metrics.MessageSent()
+	addMessageSentMetric()
 	return nil
 }

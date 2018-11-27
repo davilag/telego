@@ -1,5 +1,6 @@
 package main
 
+// All the structs defined here are from https://core.telegram.org/bots/api#available-types
 type (
 	TelegramResponse struct {
 		Ok     *bool       `json:"ok"`
@@ -183,7 +184,7 @@ type (
 
 	InlineKeyboardButton struct {
 		Text                         string        `json:"text"`
-		Url                          string        `json:"url"`
+		URL                          string        `json:"url"`
 		CallbackData                 string        `json:"callback_data"`
 		SwitchInlineQuery            string        `json:"switch_inline_query"`
 		SwitchInlineQueryCurrentChat string        `json:"switch_inline_query_current_chat"`
@@ -192,10 +193,10 @@ type (
 	}
 
 	CallbackQuery struct {
-		Id              string   `json:"id"`
+		ID              string   `json:"id"`
 		From            *User    `json:"from"`
 		Message         *Message `json:"message"`
-		InlineMessageId string   `json:"inline_message_id"`
+		InlineMessageID string   `json:"inline_message_id"`
 		ChatInstance    string   `json:"chat_instance"`
 		Data            string   `json:"data"`
 		GameShortName   string   `json:"game_short_name"`
@@ -231,7 +232,7 @@ type (
 	}
 
 	ResponseParameters struct {
-		MigrateToChatId int64 `json:"migrate_to_chat_id"`
+		MigrateToChatID int64 `json:"migrate_to_chat_id"`
 		RetryAfter      int   `json:"retry_after"`
 	}
 
@@ -309,8 +310,8 @@ type (
 		InvoicePayload          string     `json:"invoice_payload"`
 		ShippingOptionID        string     `json:"shipping_option_id"`
 		OrderInfo               *OrderInfo `json:"order_info"`
-		TelegramPaymentChargeId string     `json:"telegram_payment_charge_id"`
-		ProviderPaymentChargeId string     `json:"provider_payment_charge_id"`
+		TelegramPaymentChargeID string     `json:"telegram_payment_charge_id"`
+		ProviderPaymentChargeID string     `json:"provider_payment_charge_id"`
 	}
 
 	OrderInfo struct {
@@ -334,8 +335,8 @@ type (
 		Force              *bool `json:"force"`
 		DisableEditMessage *bool `json:"disable_edit_message"`
 		ChatID             int   `json:"chat_id"`
-		MessageId          int   `json:"message_id"`
-		InlineMessageId    int   `json:"inline_message_id"`
+		MessageID          int   `json:"message_id"`
+		InlineMessageID    int   `json:"inline_message_id"`
 	}
 
 	Update struct {

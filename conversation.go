@@ -1,12 +1,8 @@
 package main
 
-import (
-	"time"
+import "time"
 
-	"github.com/davilag/telego/metrics"
-)
-
-// Abstraction to make send messages to an specific chat.
+// Conversation abstraction to make send messages to an specific chat.
 type Conversation struct {
 	ChatID  int                    // Chat ID to which we are storing the session
 	client  TelegramClient         // instance of the telegram client to make API calls
@@ -16,10 +12,10 @@ type Conversation struct {
 	Context map[string]interface{} // Context which is going to allow to the user store data which is going to be accessible from every step
 }
 
-// Creates a conversation based on the update Chat Id
-func NewConversation(chatId int, f Flow, channel chan Update, exit chan int) Conversation {
+// NewConversation creates a conversation based on the update Chat Id
+func NewConversation(chatID int, f Flow, channel chan Update, exit chan int) Conversation {
 	return Conversation{
-		ChatID:  chatId,
+		ChatID:  chatID,
 		client:  client,
 		Flow:    f,
 		channel: channel,
@@ -28,14 +24,14 @@ func NewConversation(chatId int, f Flow, channel chan Update, exit chan int) Con
 	}
 }
 
-// Sends a message to the conversation
+// SendMessage sends a message to the conversation
 func (c *Conversation) SendMessage(m string) {
 	client.SendMessageText(m, c.ChatID)
 }
 
-// Replies to a message in the conversation.
-func (c *Conversation) ReplyToMessage(m string, messageId int) {
-	client.ReplyToMessage(m, c.ChatID, messageId)
+// ReplyToMessage replies to a message in the conversation.
+func (c *Conversation) ReplyToMessage(m string, messageID int) {
+	client.ReplyToMessage(m, c.ChatID, messageID)
 }
 
 // This execution executes only one step, it doesn't create a session
@@ -47,7 +43,7 @@ func (c *Conversation) executeUpdate(u Update) FlowStep {
 // It's going to send a message with it chat id into the c.exit channel when it times out
 // or the next step of the flow is nil
 func (c *Conversation) createSession(requeueChan chan Update) {
-	metrics.SessionStarted()
+	addSessionMetric()
 	requeue := false
 	for {
 		select {
@@ -74,5 +70,5 @@ func (c *Conversation) createSession(requeueChan chan Update) {
 // Ends the session sending a message with the chat Id to the exit channel
 func (c *Conversation) endSession() {
 	c.exit <- c.ChatID
-	metrics.SessionFinished()
+	finishSessionMetric()
 }
