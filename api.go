@@ -392,7 +392,7 @@ type (
 		Text                  string      `json:"text"`
 		ParseMode             string      `json:"parse_mode"`
 		DisableWebPagePreview *bool       `json:"disable_web_page_preview,omitempty"`
-		DisableNotification   *bool       `json:"disable_notificatio,omitemptyn"`
+		DisableNotification   *bool       `json:"disable_notification,omitemptyn"`
 		ReplyToMessageID      int         `json:"reply_to_message_id,omitempty"`
 		ReplyMarkup           interface{} `json:"reply_markup,omitempty"`
 	}
