@@ -15,11 +15,6 @@ const (
 	sendMessage = "/sendMessage"
 )
 
-type response struct {
-	Ok          bool   `json:"ok"`
-	Description string `json:"description"`
-}
-
 // TelegramClient manages the connection to the Telegram API
 type TelegramClient struct {
 	AccessToken string
@@ -53,7 +48,7 @@ func (c *TelegramClient) getUpdates(offset int) []Update {
 }
 
 // SendMessageText sends the given message to the given chat ID
-func (c *TelegramClient) SendMessageText(message string, chatID int) error {
+func (c *TelegramClient) SendMessageText(message string, chatID int) (Message, error) {
 	mo := MessageOut{
 		Text:   message,
 		ChatID: chatID,
@@ -62,7 +57,7 @@ func (c *TelegramClient) SendMessageText(message string, chatID int) error {
 }
 
 // ReplyToMessage sends a message to a chat replying to the indicated message.
-func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) error {
+func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) (Message, error) {
 	mo := MessageOut{
 		Text:             message,
 		ChatID:           chatID,
@@ -73,26 +68,26 @@ func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID in
 }
 
 // SendMessage sends a message with the filled MessageOut object.
-func (c *TelegramClient) SendMessage(m MessageOut) error {
+func (c *TelegramClient) SendMessage(m MessageOut) (Message, error) {
 	b, e := json.Marshal(m)
 
 	if e != nil {
-		return e
+		return Message{}, e
 	}
 
 	ep := fmt.Sprintf("%v%v%v", telegramAPI, c.AccessToken, sendMessage)
 	resp, err := http.Post(ep, "application/json", bytes.NewReader(b))
 	if err != nil {
-		return e
+		return Message{}, err
 	}
 	defer resp.Body.Close()
 
-	var body response
+	var body TelegramResponse
 	json.NewDecoder(resp.Body).Decode(&body)
 
 	if !body.Ok {
-		return errors.New(body.Description)
+		return Message{}, errors.New(body.Description)
 	}
 	addMessageSentMetric()
-	return nil
+	return body.Result.(Message), nil
 }

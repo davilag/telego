@@ -3,8 +3,10 @@ package main
 // All the structs defined here are from https://core.telegram.org/bots/api#available-types
 type (
 	TelegramResponse struct {
-		Ok     *bool       `json:"ok"`
-		Result interface{} `json:"result"`
+		Ok          bool        `json:"ok"`
+		Result      interface{} `json:"result"`
+		Description string      `json:"description"`
+		ErrorCode   int32       `json:"error_code"`
 	}
 
 	User struct {

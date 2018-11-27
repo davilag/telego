@@ -25,13 +25,13 @@ func NewConversation(chatID int, f Flow, channel chan Update, exit chan int) Con
 }
 
 // SendMessage sends a message to the conversation
-func (c *Conversation) SendMessage(m string) {
-	client.SendMessageText(m, c.ChatID)
+func (c *Conversation) SendMessage(m string) (Message, error) {
+	return client.SendMessageText(m, c.ChatID)
 }
 
 // ReplyToMessage replies to a message in the conversation.
-func (c *Conversation) ReplyToMessage(m string, messageID int) {
-	client.ReplyToMessage(m, c.ChatID, messageID)
+func (c *Conversation) ReplyToMessage(m string, messageID int) (Message, error) {
+	return client.ReplyToMessage(m, c.ChatID, messageID)
 }
 
 // This execution executes only one step, it doesn't create a session

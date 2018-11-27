@@ -18,13 +18,15 @@ func main() {
 func firstStep(u Update, c Conversation) FlowStep {
 	fmt.Println("I'm in the first step")
 	c.Context["message"] = u.Message.Text
-	c.SendMessage("Hi there first step!")
+	response, _ := c.SendMessage("Hi there first step!")
+	fmt.Println(response.ID)
 	return secondStep
 }
 
 func secondStep(u Update, c Conversation) FlowStep {
 	fmt.Println("I'm in the second step")
-	c.SendMessage(fmt.Sprintf("Your previous message was: %s", c.Context["message"]))
+	response, _ := c.SendMessage(fmt.Sprintf("Your previous message was: %s", c.Context["message"]))
+	fmt.Println(response.ID)
 	return nil
 }
 
