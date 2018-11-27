@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 const (
@@ -67,9 +69,31 @@ func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID in
 	return c.SendMessage(mo)
 }
 
+// SendMessageWithKeyboard sends a message showing a list of options to the user as a custom keyboard
+func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, keyboardOptions []string) (Message, error) {
+	m := MessageOut{
+		Text:   message,
+		ChatID: chatID,
+	}
+	var rkm ReplyKeyboardMarkup
+
+	rkm.Keyboard = make([][]KeyboardButton, len(keyboardOptions))
+	for i, o := range keyboardOptions {
+		rkm.Keyboard[i] = []KeyboardButton{
+			KeyboardButton{
+				Text: o,
+			},
+		}
+	}
+	m.ReplyMarkup = rkm
+
+	return c.SendMessage(m)
+}
+
 // SendMessage sends a message with the filled MessageOut object.
-func (c *TelegramClient) SendMessage(m MessageOut) (Message, error) {
-	b, e := json.Marshal(m)
+func (c *TelegramClient) SendMessage(mo MessageOut) (Message, error) {
+	b, e := json.Marshal(mo)
+	fmt.Println(string(b))
 
 	if e != nil {
 		return Message{}, e
@@ -89,5 +113,11 @@ func (c *TelegramClient) SendMessage(m MessageOut) (Message, error) {
 		return Message{}, errors.New(body.Description)
 	}
 	addMessageSentMetric()
-	return body.Result.(Message), nil
+	var m Message
+
+	err = mapstructure.Decode(body.Result, &m)
+	if err != nil {
+		return Message{}, err
+	}
+	return m, nil
 }

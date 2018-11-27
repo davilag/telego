@@ -34,6 +34,11 @@ func (c *Conversation) ReplyToMessage(m string, messageID int) (Message, error) 
 	return client.ReplyToMessage(m, c.ChatID, messageID)
 }
 
+// SendMessageWithKeyboard sends a message showing a list of options to the user as a custom keyboard
+func (c *Conversation) SendMessageWithKeyboard(m string, keyboardOptions []string) (Message, error) {
+	return client.SendMessageWithKeyboard(m, c.ChatID, keyboardOptions)
+}
+
 // This execution executes only one step, it doesn't create a session
 func (c *Conversation) executeUpdate(u Update) FlowStep {
 	return c.Flow.ActualStep(u, *c)
