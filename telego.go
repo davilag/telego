@@ -19,6 +19,7 @@ var (
 	metricMessageSent     = "telego_message_sent"
 	metricMessageReceived = "telego_message_received"
 	metricSession         = "telego_sessions"
+	produceMetrics        = false
 )
 
 // Initialise inits the telegram instance with the telegram bot access token
@@ -101,29 +102,37 @@ func (t *Telego) SetupMetrics() {
 }
 
 func addMessageSentMetric() {
-	m, ok := metrics.GetCounter(metricMessageSent)
-	if ok {
-		m.Inc()
+	if produceMetrics {
+		m, ok := metrics.GetCounter(metricMessageSent)
+		if ok {
+			m.Inc()
+		}
 	}
 }
 
 func addMessageReceivedMetric() {
-	m, ok := metrics.GetCounter(metricMessageReceived)
-	if ok {
-		m.Inc()
+	if produceMetrics {
+		m, ok := metrics.GetCounter(metricMessageReceived)
+		if ok {
+			m.Inc()
+		}
 	}
 }
 
 func addSessionMetric() {
-	m, ok := metrics.GetGauge(metricSession)
-	if ok {
-		m.Inc()
+	if produceMetrics {
+		m, ok := metrics.GetGauge(metricSession)
+		if ok {
+			m.Inc()
+		}
 	}
 }
 
 func finishSessionMetric() {
-	m, ok := metrics.GetGauge(metricSession)
-	if ok {
-		m.Dec()
+	if produceMetrics {
+		m, ok := metrics.GetGauge(metricSession)
+		if ok {
+			m.Dec()
+		}
 	}
 }
