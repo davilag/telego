@@ -41,7 +41,7 @@ func Initialise(accessToken string) Telego {
 // what we are going to do with messages that by default the bot doesn't understand
 // (eg. send a description of the commands)
 func (t *Telego) SetDefaultMessageHandler(f FlowStep) {
-	t.defaultHandler = f
+	telego.defaultHandler = f
 }
 
 // AddKindHandler adds the step that it is going to be executed when we receive a message
