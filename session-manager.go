@@ -1,4 +1,4 @@
-package main
+package telego
 
 type sessionManager struct {
 	update   chan Update         // Update channel which expects new messages from Telegram

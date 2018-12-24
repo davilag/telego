@@ -1,4 +1,4 @@
-package main
+package telego
 
 import (
 	"github.com/davilag/telego/kind"

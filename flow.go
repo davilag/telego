@@ -1,4 +1,4 @@
-package main
+package telego
 
 // FlowStep it accepts an update and a conversation and it returns the next step
 // In order to no execute any more steps, it has to return nil

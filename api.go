@@ -1,4 +1,4 @@
-package main
+package telego
 
 // All the structs defined here are from https://core.telegram.org/bots/api#available-types
 type (
