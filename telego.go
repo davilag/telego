@@ -14,7 +14,7 @@ type Telego struct {
 }
 
 var (
-	client                TelegramClient
+	Client                TelegramClient
 	telego                Telego
 	metricMessageSent     = "telego_message_sent"
 	metricMessageReceived = "telego_message_received"
@@ -25,7 +25,7 @@ var (
 // Initialise inits the telegram instance with the telegram bot access token
 // See https://core.telegram.org/bots/api#authorizing-your-bot
 func Initialise(accessToken string) Telego {
-	client = TelegramClient{
+	Client = TelegramClient{
 		AccessToken: accessToken,
 	}
 	updates, _ := NewSessionManager()
@@ -82,7 +82,7 @@ func (t *Telego) Listen() {
 	var offset int
 	fetch := true
 	for fetch {
-		us := client.getUpdates(offset)
+		us := Client.getUpdates(offset)
 		for _, u := range us {
 			addMessageReceivedMetric()
 			telego.updates <- u
