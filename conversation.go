@@ -16,7 +16,7 @@ type Conversation struct {
 func NewConversation(chatID int, f Flow, channel chan Update, exit chan int) Conversation {
 	return Conversation{
 		ChatID:  chatID,
-		client:  Client,
+		client:  client,
 		Flow:    f,
 		channel: channel,
 		exit:    exit,
