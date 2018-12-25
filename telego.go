@@ -11,7 +11,7 @@ type Telego struct {
 	kindFlows      map[kind.Kind]Flow // Flows that are going to be executed based on the kind of the message
 	commandFlows   map[string]Flow    // Flows that are goingto be executed based on the command that the message has
 	updates        chan Update        // Channel on which we have to send the updates to be processed
-	Client         TelegramClient
+	Client         TelegramClient     // Client telegarm client from which we communicate with the Telegram API
 }
 
 var (
