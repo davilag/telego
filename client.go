@@ -93,7 +93,6 @@ func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, key
 // SendMessage sends a message with the filled MessageOut object.
 func (c *TelegramClient) SendMessage(mo MessageOut) (Message, error) {
 	b, e := json.Marshal(mo)
-	fmt.Println(string(b))
 
 	if e != nil {
 		return Message{}, e
