@@ -19,6 +19,7 @@ var (
 	metricMessageSent     = "telego_message_sent"
 	metricMessageReceived = "telego_message_received"
 	metricSession         = "telego_sessions"
+	telegramHost          = "https://api.telegram.org/bot"
 )
 
 // Initialise inits the telegram instance with the telegram bot access token
@@ -98,6 +99,11 @@ func (t *Telego) SetupMetrics() {
 	metrics.AddCounter(metricMessageReceived, "Telego receiving a message")
 	metrics.AddGauge(metricSession, "Sessions that telego is keeping waiting for messages")
 	go metrics.ExposeMetrics()
+}
+
+// SetTelegramHost sets the telegram host where telegram is running
+func (t *Telego) SetTelegramHost(tm string) {
+	telegramHost = tm
 }
 
 func addMessageSentMetric() {

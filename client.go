@@ -12,7 +12,6 @@ import (
 )
 
 const (
-	telegramAPI = "https://api.telegram.org/bot"
 	getUpdates  = "/getUpdates?offset="
 	sendMessage = "/sendMessage"
 )
@@ -25,7 +24,7 @@ type TelegramClient struct {
 // Returns a list of updates hitting the getUpdates method
 // see https://core.telegram.org/bots/api#getupdates
 func (c *TelegramClient) getUpdates(offset int) []Update {
-	ep := fmt.Sprintf("%v%v%v%v", telegramAPI, c.AccessToken, getUpdates, offset)
+	ep := fmt.Sprintf("%v%v%v%v", telegramHost, c.AccessToken, getUpdates, offset)
 	r, e := http.Get(ep)
 
 	if e != nil {
@@ -99,7 +98,7 @@ func (c *TelegramClient) SendMessage(mo MessageOut) (Message, error) {
 		return Message{}, e
 	}
 
-	ep := fmt.Sprintf("%v%v%v", telegramAPI, c.AccessToken, sendMessage)
+	ep := fmt.Sprintf("%v%v%v", telegramHost, c.AccessToken, sendMessage)
 	resp, err := http.Post(ep, "application/json", bytes.NewReader(b))
 	if err != nil {
 		return Message{}, err
