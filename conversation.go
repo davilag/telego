@@ -26,17 +26,17 @@ func NewConversation(chatID int, f Flow, channel chan Update, exit chan int) Con
 
 // SendMessage sends a message to the conversation
 func (c *Conversation) SendMessage(m string) (Message, error) {
-	return client.SendMessageText(m, c.ChatID)
+	return c.client.SendMessageText(m, c.ChatID)
 }
 
 // ReplyToMessage replies to a message in the conversation.
 func (c *Conversation) ReplyToMessage(m string, messageID int) (Message, error) {
-	return client.ReplyToMessage(m, c.ChatID, messageID)
+	return c.client.ReplyToMessage(m, c.ChatID, messageID)
 }
 
 // SendMessageWithKeyboard sends a message showing a list of options to the user as a custom keyboard
 func (c *Conversation) SendMessageWithKeyboard(m string, keyboardOptions []string) (Message, error) {
-	return client.SendMessageWithKeyboard(m, c.ChatID, keyboardOptions)
+	return c.client.SendMessageWithKeyboard(m, c.ChatID, keyboardOptions)
 }
 
 // This execution executes only one step, it doesn't create a session

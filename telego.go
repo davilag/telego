@@ -11,6 +11,7 @@ type Telego struct {
 	kindFlows      map[kind.Kind]Flow // Flows that are going to be executed based on the kind of the message
 	commandFlows   map[string]Flow    // Flows that are goingto be executed based on the command that the message has
 	updates        chan Update        // Channel on which we have to send the updates to be processed
+	Client         TelegramClient     // Client telegarm client from which we communicate with the Telegram API
 }
 
 var (
@@ -20,6 +21,7 @@ var (
 	metricMessageReceived = "telego_message_received"
 	metricSession         = "telego_sessions"
 	telegramHost          = "https://api.telegram.org/bot"
+	produceMetrics        = false
 )
 
 // Initialise inits the telegram instance with the telegram bot access token
@@ -33,6 +35,7 @@ func Initialise(accessToken string) Telego {
 		kindFlows:    map[kind.Kind]Flow{},
 		commandFlows: map[string]Flow{},
 		updates:      updates,
+		Client:       client,
 	}
 
 	return telego
@@ -107,29 +110,37 @@ func (t *Telego) SetTelegramHost(tm string) {
 }
 
 func addMessageSentMetric() {
-	m, ok := metrics.GetCounter(metricMessageSent)
-	if ok {
-		m.Inc()
+	if produceMetrics {
+		m, ok := metrics.GetCounter(metricMessageSent)
+		if ok {
+			m.Inc()
+		}
 	}
 }
 
 func addMessageReceivedMetric() {
-	m, ok := metrics.GetCounter(metricMessageReceived)
-	if ok {
-		m.Inc()
+	if produceMetrics {
+		m, ok := metrics.GetCounter(metricMessageReceived)
+		if ok {
+			m.Inc()
+		}
 	}
 }
 
 func addSessionMetric() {
-	m, ok := metrics.GetGauge(metricSession)
-	if ok {
-		m.Inc()
+	if produceMetrics {
+		m, ok := metrics.GetGauge(metricSession)
+		if ok {
+			m.Inc()
+		}
 	}
 }
 
 func finishSessionMetric() {
-	m, ok := metrics.GetGauge(metricSession)
-	if ok {
-		m.Dec()
+	if produceMetrics {
+		m, ok := metrics.GetGauge(metricSession)
+		if ok {
+			m.Dec()
+		}
 	}
 }
