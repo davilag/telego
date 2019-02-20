@@ -28,7 +28,7 @@ func Initialise(accessToken string) Telego {
 	client = TelegramClient{
 		AccessToken: accessToken,
 	}
-	updates, _ := NewSessionManager()
+	updates, _ := newSessionManager()
 	telego = Telego{
 		kindFlows:    map[kind.Kind]Flow{},
 		commandFlows: map[string]Flow{},

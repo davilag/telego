@@ -7,12 +7,14 @@ type sessionManager struct {
 	channels map[int]chan Update // Map from ChatID to channel which stores the channel to communicate with live sessions.
 }
 
-// NewSessionManager initialises a session manager which is going to manage the sessions
-// by chat id. It returns 2 channels, the first one is the channel where
-// the session manager expects new updates from telegram and the second
+// newSessionManager initialises a session manager which is going to manage the sessions
+// by chat id. It returns 3 channels, the first one is the channel where
+// the session manager expects new updates from telegram, the second
 // channel is the channel where the manager expects a message from the
-// conversations to finish the session.
-func NewSessionManager() (chan Update, chan int) {
+// conversations to finish the session and the third channel is the channel where
+// we are going to requeue messages that we were assigned to a session the first time
+// but that they should be process as a new session.
+func newSessionManager() (chan Update, chan int) {
 	s := sessionManager{
 		update:   make(chan Update, 100),
 		exit:     make(chan int, 100),
@@ -25,7 +27,10 @@ func NewSessionManager() (chan Update, chan int) {
 }
 
 // Main loop for the session manager. It's listening for events in the exit and
-// update channels. It gives priority to the exit channel.
+// update channels. It gives priority to the exit and requeue channel.
+// The reason why we're giving priority to the exit and the requeue channel is because
+// we want to finish the session as soon as we've reached the timeout and if we have
+// a requeued message, we want to give it higher priority.
 func (s *sessionManager) manageChannels() {
 	for {
 		select {
