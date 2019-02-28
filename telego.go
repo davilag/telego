@@ -16,7 +16,6 @@ type Telego struct {
 
 var (
 	client                TelegramClient
-	telego                Telego
 	metricMessageSent     = "telego_message_sent"
 	metricMessageReceived = "telego_message_received"
 	metricSession         = "telego_sessions"
@@ -26,26 +25,25 @@ var (
 
 // Initialise inits the telegram instance with the telegram bot access token
 // See https://core.telegram.org/bots/api#authorizing-your-bot
-func Initialise(accessToken string) Telego {
+func Initialise(accessToken string) *Telego {
 	client = TelegramClient{
 		AccessToken: accessToken,
 	}
-	updates, _ := newSessionManager()
-	telego = Telego{
+	telego := Telego{
 		kindFlows:    map[kind.Kind]Flow{},
 		commandFlows: map[string]Flow{},
-		updates:      updates,
 		Client:       client,
 	}
-
-	return telego
+	updates, _ := newSessionManager(&telego)
+	telego.updates = updates
+	return &telego
 }
 
 // SetDefaultMessageHandler Sets the default message handler for the telegram bot. It defines
 // what we are going to do with messages that by default the bot doesn't understand
 // (eg. send a description of the commands)
 func (t *Telego) SetDefaultMessageHandler(f FlowStep) {
-	telego.defaultHandler = f
+	t.defaultHandler = f
 }
 
 // AddKindHandler adds the step that it is going to be executed when we receive a message
@@ -88,7 +86,7 @@ func (t *Telego) Listen() {
 		us := client.getUpdates(offset)
 		for _, u := range us {
 			addMessageReceivedMetric()
-			telego.updates <- u
+			t.updates <- u
 			offset = u.UpdateID + 1
 		}
 	}

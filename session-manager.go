@@ -5,6 +5,7 @@ type sessionManager struct {
 	exit     chan int            // Exit channel where it expects messages from the conversations to finish them
 	requeue  chan Update         // Channel to receive requeue messages
 	channels map[int]chan Update // Map from ChatID to channel which stores the channel to communicate with live sessions.
+	telego   *Telego
 }
 
 // newSessionManager initialises a session manager which is going to manage the sessions
@@ -14,12 +15,13 @@ type sessionManager struct {
 // conversations to finish the session and the third channel is the channel where
 // we are going to requeue messages that we were assigned to a session the first time
 // but that they should be process as a new session.
-func newSessionManager() (chan Update, chan int) {
+func newSessionManager(telego *Telego) (chan Update, chan int) {
 	s := sessionManager{
 		update:   make(chan Update, 100),
 		exit:     make(chan int, 100),
 		requeue:  make(chan Update, 100),
 		channels: map[int]chan Update{},
+		telego:   telego,
 	}
 	go s.manageChannels()
 
@@ -73,42 +75,42 @@ func (s *sessionManager) doExit(cID int) {
 
 // Given a message, it checks if it contains any command
 // and returns a flow based on that.
-func getCommandFlows(m *Message) (Flow, bool) {
+func getCommandFlows(m *Message, s *sessionManager) (Flow, bool) {
 	command := m.GetCommand()
 	if command == "" {
 		return Flow{}, false
 	}
-	value, ok := telego.commandFlows[command]
+	value, ok := s.telego.commandFlows[command]
 	return value, ok
 }
 
 // Given a message, it checks its kind and returns a flow
 // based on it.
-func getKindFlows(m *Message) (Flow, bool) {
+func getKindFlows(m *Message, s *sessionManager) (Flow, bool) {
 	k := m.GetKind()
-	value, ok := telego.kindFlows[k]
+	value, ok := s.telego.kindFlows[k]
 	return value, ok
 }
 
 // Gets the flow to execute given a message, it gives priority
 // to the command flows. Returns the default handler defined in
 // the package if the message doesn't match any flow.
-func getFlow(m *Message) Flow {
-	if f, ok := getCommandFlows(m); ok {
+func getFlow(m *Message, s *sessionManager) Flow {
+	if f, ok := getCommandFlows(m, s); ok {
 		return f
 	}
-	if f, ok := getKindFlows(m); ok {
+	if f, ok := getKindFlows(m, s); ok {
 		return f
 	}
 	return Flow{
-		ActualStep: telego.defaultHandler,
+		ActualStep: s.telego.defaultHandler,
 	}
 }
 
 // Initialises a conversation, retrieving the flow defined for each command/kind
 // and executing the default handler if no flow has been defined for that message
 func (s *sessionManager) startConversation(u Update) chan Update {
-	f := getFlow(u.Message)
+	f := getFlow(u.Message, s)
 	if f.ActualStep == nil {
 		return nil
 	}
