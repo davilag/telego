@@ -1,6 +1,7 @@
 package telego
 
 import (
+	"github.com/davilag/telego/api"
 	"github.com/davilag/telego/kind"
 	"github.com/davilag/telego/metrics"
 )
@@ -10,8 +11,8 @@ type Telego struct {
 	defaultHandler FlowStep           // Default handler which is going to be executed for those messages that don't have any flow assigned
 	kindFlows      map[kind.Kind]Flow // Flows that are going to be executed based on the kind of the message
 	commandFlows   map[string]Flow    // Flows that are goingto be executed based on the command that the message has
-	updates        chan Update        // Channel on which we have to send the updates to be processed
-	Client         TelegramClient     // Client telegarm client from which we communicate with the Telegram API
+	updates        chan api.Update    // Channel on which we have to send the updates to be processed
+	client         TelegramClient     // Client telegarm client from which we communicate with the Telegram API
 }
 
 var (
@@ -32,7 +33,7 @@ func Initialise(accessToken string) *Telego {
 	telego := Telego{
 		kindFlows:    map[kind.Kind]Flow{},
 		commandFlows: map[string]Flow{},
-		Client:       client,
+		client:       client,
 	}
 	updates, _ := newSessionManager(&telego)
 	telego.updates = updates

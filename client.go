@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/davilag/telego/api"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -23,7 +24,7 @@ type TelegramClient struct {
 
 // Returns a list of updates hitting the getUpdates method
 // see https://core.telegram.org/bots/api#getupdates
-func (c *TelegramClient) getUpdates(offset int) []Update {
+func (c *TelegramClient) getUpdates(offset int) []api.Update {
 	ep := fmt.Sprintf("%v%v%v%v", telegramHost, c.AccessToken, getUpdates, offset)
 	r, e := http.Get(ep)
 
@@ -37,8 +38,8 @@ func (c *TelegramClient) getUpdates(offset int) []Update {
 		panic(readErr)
 	}
 
-	obj := TelegramResponse{Result: &[]Update{}}
-	result := obj.Result.(*[]Update)
+	obj := api.TelegramResponse{Result: &[]api.Update{}}
+	result := obj.Result.(*[]api.Update)
 
 	jsonErr := json.Unmarshal(body, &obj)
 	if jsonErr != nil {
@@ -49,8 +50,8 @@ func (c *TelegramClient) getUpdates(offset int) []Update {
 }
 
 // SendMessageText sends the given message to the given chat ID
-func (c *TelegramClient) SendMessageText(message string, chatID int) (Message, error) {
-	mo := MessageOut{
+func (c *TelegramClient) SendMessageText(message string, chatID int) (api.Message, error) {
+	mo := api.MessageOut{
 		Text:   message,
 		ChatID: chatID,
 	}
@@ -58,8 +59,8 @@ func (c *TelegramClient) SendMessageText(message string, chatID int) (Message, e
 }
 
 // ReplyToMessage sends a message to a chat replying to the indicated message.
-func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) (Message, error) {
-	mo := MessageOut{
+func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID int) (api.Message, error) {
+	mo := api.MessageOut{
 		Text:             message,
 		ChatID:           chatID,
 		ReplyToMessageID: messageID,
@@ -69,17 +70,17 @@ func (c *TelegramClient) ReplyToMessage(message string, chatID int, messageID in
 }
 
 // SendMessageWithKeyboard sends a message showing a list of options to the user as a custom keyboard
-func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, keyboardOptions []string) (Message, error) {
-	m := MessageOut{
+func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, keyboardOptions []string) (api.Message, error) {
+	m := api.MessageOut{
 		Text:   message,
 		ChatID: chatID,
 	}
-	var rkm ReplyKeyboardMarkup
+	var rkm api.ReplyKeyboardMarkup
 
-	rkm.Keyboard = make([][]KeyboardButton, len(keyboardOptions))
+	rkm.Keyboard = make([][]api.KeyboardButton, len(keyboardOptions))
 	for i, o := range keyboardOptions {
-		rkm.Keyboard[i] = []KeyboardButton{
-			KeyboardButton{
+		rkm.Keyboard[i] = []api.KeyboardButton{
+			api.KeyboardButton{
 				Text: o,
 			},
 		}
@@ -90,32 +91,32 @@ func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, key
 }
 
 // SendMessage sends a message with the filled MessageOut object.
-func (c *TelegramClient) SendMessage(mo MessageOut) (Message, error) {
+func (c *TelegramClient) SendMessage(mo api.MessageOut) (api.Message, error) {
 	b, e := json.Marshal(mo)
 
 	if e != nil {
-		return Message{}, e
+		return api.Message{}, e
 	}
 
 	ep := fmt.Sprintf("%v%v%v", telegramHost, c.AccessToken, sendMessage)
 	resp, err := http.Post(ep, "application/json", bytes.NewReader(b))
 	if err != nil {
-		return Message{}, err
+		return api.Message{}, err
 	}
 	defer resp.Body.Close()
 
-	var body TelegramResponse
+	var body api.TelegramResponse
 	json.NewDecoder(resp.Body).Decode(&body)
 
 	if !body.Ok {
-		return Message{}, errors.New(body.Description)
+		return api.Message{}, errors.New(body.Description)
 	}
 	addMessageSentMetric()
-	var m Message
+	var m api.Message
 
 	err = mapstructure.Decode(body.Result, &m)
 	if err != nil {
-		return Message{}, err
+		return api.Message{}, err
 	}
 	return m, nil
 }

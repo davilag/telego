@@ -1,10 +1,12 @@
 package telego
 
+import "github.com/davilag/telego/api"
+
 type sessionManager struct {
-	update   chan Update         // Update channel which expects new messages from Telegram
-	exit     chan int            // Exit channel where it expects messages from the conversations to finish them
-	requeue  chan Update         // Channel to receive requeue messages
-	channels map[int]chan Update // Map from ChatID to channel which stores the channel to communicate with live sessions.
+	update   chan api.Update         // Update channel which expects new messages from Telegram
+	exit     chan int                // Exit channel where it expects messages from the conversations to finish them
+	requeue  chan api.Update         // Channel to receive requeue messages
+	channels map[int]chan api.Update // Map from ChatID to channel which stores the channel to communicate with live sessions.
 	telego   *Telego
 }
 
@@ -15,12 +17,12 @@ type sessionManager struct {
 // conversations to finish the session and the third channel is the channel where
 // we are going to requeue messages that we were assigned to a session the first time
 // but that they should be process as a new session.
-func newSessionManager(telego *Telego) (chan Update, chan int) {
+func newSessionManager(telego *Telego) (chan api.Update, chan int) {
 	s := sessionManager{
-		update:   make(chan Update, 100),
+		update:   make(chan api.Update, 100),
 		exit:     make(chan int, 100),
-		requeue:  make(chan Update, 100),
-		channels: map[int]chan Update{},
+		requeue:  make(chan api.Update, 100),
+		channels: map[int]chan api.Update{},
 		telego:   telego,
 	}
 	go s.manageChannels()
@@ -56,7 +58,7 @@ func (s *sessionManager) manageChannels() {
 }
 
 // Method to manage an update comming from the telegram API
-func (s *sessionManager) manageUpdate(u Update) {
+func (s *sessionManager) manageUpdate(u api.Update) {
 	chatID := u.Message.Chat.ID
 	v, ok := s.channels[chatID]
 
@@ -75,7 +77,7 @@ func (s *sessionManager) doExit(cID int) {
 
 // Given a message, it checks if it contains any command
 // and returns a flow based on that.
-func getCommandFlows(m *Message, s *sessionManager) (Flow, bool) {
+func getCommandFlows(m *api.Message, s *sessionManager) (Flow, bool) {
 	command := m.GetCommand()
 	if command == "" {
 		return Flow{}, false
@@ -86,7 +88,7 @@ func getCommandFlows(m *Message, s *sessionManager) (Flow, bool) {
 
 // Given a message, it checks its kind and returns a flow
 // based on it.
-func getKindFlows(m *Message, s *sessionManager) (Flow, bool) {
+func getKindFlows(m *api.Message, s *sessionManager) (Flow, bool) {
 	k := m.GetKind()
 	value, ok := s.telego.kindFlows[k]
 	return value, ok
@@ -95,7 +97,7 @@ func getKindFlows(m *Message, s *sessionManager) (Flow, bool) {
 // Gets the flow to execute given a message, it gives priority
 // to the command flows. Returns the default handler defined in
 // the package if the message doesn't match any flow.
-func getFlow(m *Message, s *sessionManager) Flow {
+func getFlow(m *api.Message, s *sessionManager) Flow {
 	if f, ok := getCommandFlows(m, s); ok {
 		return f
 	}
@@ -109,18 +111,18 @@ func getFlow(m *Message, s *sessionManager) Flow {
 
 // Initialises a conversation, retrieving the flow defined for each command/kind
 // and executing the default handler if no flow has been defined for that message
-func (s *sessionManager) startConversation(u Update) chan Update {
+func (s *sessionManager) startConversation(u api.Update) chan api.Update {
 	f := getFlow(u.Message, s)
 	if f.ActualStep == nil {
 		return nil
 	}
-	var cu chan Update
+	var cu chan api.Update
 
 	// We only create the channel if the flow has time to live
 	// Otherwise, we don't create any channel as the flow will
 	// execute just one handler.
 	if f.TimeToLive != 0 {
-		cu = make(chan Update)
+		cu = make(chan api.Update)
 		s.channels[u.Message.Chat.ID] = cu
 	}
 	c := NewConversation(u.Message.Chat.ID, f, cu, s.exit)

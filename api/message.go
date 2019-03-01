@@ -1,4 +1,4 @@
-package telego
+package api
 
 import "github.com/davilag/telego/kind"
 

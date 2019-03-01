@@ -1,8 +1,10 @@
 package telego
 
+import "github.com/davilag/telego/api"
+
 // FlowStep it accepts an update and a conversation and it returns the next step
 // In order to no execute any more steps, it has to return nil
-type FlowStep func(Update, Conversation) FlowStep
+type FlowStep func(api.Update, Conversation) FlowStep
 
 // Flow has the information about the next step that has to be executed into the flow
 // and the time to live for that flow.
