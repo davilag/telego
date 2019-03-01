@@ -16,7 +16,6 @@ type Telego struct {
 }
 
 var (
-	Client                TelegramClient
 	metricMessageSent     = "telego_message_sent"
 	metricMessageReceived = "telego_message_received"
 	metricSession         = "telego_sessions"
@@ -24,7 +23,7 @@ var (
 	produceMetrics        = false
 )
 
-// Initialise inits the telegram instance with the telegram bot access token
+// Initialise inits the telegram instance with the telegram bot access token.
 // See https://core.telegram.org/bots/api#authorizing-your-bot
 func Initialise(accessToken string) *Telego {
 	client := TelegramClient{
