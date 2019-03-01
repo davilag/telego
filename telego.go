@@ -12,11 +12,11 @@ type Telego struct {
 	kindFlows      map[kind.Kind]Flow // Flows that are going to be executed based on the kind of the message
 	commandFlows   map[string]Flow    // Flows that are goingto be executed based on the command that the message has
 	updates        chan api.Update    // Channel on which we have to send the updates to be processed
-	client         TelegramClient     // Client telegarm client from which we communicate with the Telegram API
+	Client         TelegramClient     // Client allows send messages to Telegram chats
 }
 
 var (
-	client                TelegramClient
+	Client                TelegramClient
 	metricMessageSent     = "telego_message_sent"
 	metricMessageReceived = "telego_message_received"
 	metricSession         = "telego_sessions"
@@ -27,13 +27,13 @@ var (
 // Initialise inits the telegram instance with the telegram bot access token
 // See https://core.telegram.org/bots/api#authorizing-your-bot
 func Initialise(accessToken string) *Telego {
-	client = TelegramClient{
+	client := TelegramClient{
 		AccessToken: accessToken,
 	}
 	telego := Telego{
 		kindFlows:    map[kind.Kind]Flow{},
 		commandFlows: map[string]Flow{},
-		client:       client,
+		Client:       client,
 	}
 	updates, _ := newSessionManager(&telego)
 	telego.updates = updates
@@ -84,7 +84,7 @@ func (t *Telego) Listen() {
 	var offset int
 	fetch := true
 	for fetch {
-		us := client.getUpdates(offset)
+		us := t.Client.getUpdates(offset)
 		for _, u := range us {
 			addMessageReceivedMetric()
 			t.updates <- u

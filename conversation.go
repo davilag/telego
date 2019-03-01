@@ -17,10 +17,10 @@ type Conversation struct {
 }
 
 // NewConversation creates a conversation based on the update Chat Id
-func NewConversation(chatID int, f Flow, channel chan api.Update, exit chan int) Conversation {
+func NewConversation(chatID int, f Flow, channel chan api.Update, exit chan int, telego *Telego) Conversation {
 	return Conversation{
 		ChatID:  chatID,
-		client:  client,
+		client:  telego.Client,
 		Flow:    f,
 		channel: channel,
 		exit:    exit,
