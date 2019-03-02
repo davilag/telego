@@ -62,8 +62,8 @@ func (t *Telego) AddKindHandlerSession(k kind.Kind, fs FlowStep, ttl int32) {
 	t.kindFlows[k] = f
 }
 
-// AddCommandHanlder adds the step that it is going to be executed when we receive a certain command
-func (t *Telego) AddCommandHanlder(c string, fs FlowStep) {
+// AddCommandHandlder adds the step that it is going to be executed when we receive a certain command
+func (t *Telego) AddCommandHandlder(c string, fs FlowStep) {
 	t.AddCommandHanlderSession(c, fs, 0)
 }
 
