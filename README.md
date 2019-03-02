@@ -1,16 +1,12 @@
 # Telego
 
-Go framework for Telegram bots.
+Telego is a Go framework for Telegram bots. It helps you building Telegram applications interacting with the [Telegram Bot API](https://core.telegram.org/bots/api) for you. It also gives you tools like flows which gives you the abiity to define steps for specific messages from the users.
 
-## Introduction
-
-Telego helps you build telegram applications making the interaction with the [Telegram Bot API](https://core.telegram.org/bots/api) easier. It also gives you tools like flows which gives you the abiity to define steps for specific messages from the users.
-
-## Usage
+# Usage
 
 For full details of all the available functionallity that Telego provides, please go to the [full docs](https://godoc.org/github.com/davilag/telego)
 
-### Initialise Telego
+## Initialise Telego
 
 The first thing that you have to do to use telego is [create a Telegram bot](https://core.telegram.org/bots#creating-a-new-bot) and get its bot token.
 Once you have the token, you can initialise your bot doing:
@@ -28,7 +24,7 @@ bot.Listen()
 
 `Listen`, on an infinite loop, makes a [request to Telegram](https://core.telegram.org/bots/api#getupdates) to get the latest messages for your bot.
 
-### Message handlers
+## Message handlers
 
 Telego provides an easy way to handle different kind of messages. In order to handle messages, you will need first to define different [FlowStep](https://godoc.org/github.com/davilag/telego#FlowStep) functions.
 
@@ -49,7 +45,7 @@ In order to make your bot react to different messages, there are three different
 - [Command handler](#command-handler)
 - [Default handler](#default-handler)
 
-#### Kind handler
+### Kind handler
 
 You can define handlers for the different kind of messages that the user can send to your bot. All the different kinds are defined [here](https://godoc.org/github.com/davilag/telego/kind).
 
@@ -82,7 +78,7 @@ And this is the output that we are going to have from our bot:
 
 ![](_img/doc_kind_handler.jpeg)
 
-#### Command handler
+### Command handler
 
 The normal way of starting an interaction with a bot are [commands](https://core.telegram.org/bots#commands). In order to set a handler for commands, we will need to call `AddCommandHandlder`.
 
@@ -114,7 +110,7 @@ And this is the result of interacting with the bot:
 
 ![](_img/doc_command_handler.jpeg)
 
-#### Default handler
+### Default handler
 
 With Telego you also have the ability to react by default to any message. This is usually used to show the user a help message, for example to show them all the commands that you have. To initialise the default handler, you will need to use `SetDefaultMessageHandler`.
 
