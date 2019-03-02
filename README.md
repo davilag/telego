@@ -16,13 +16,13 @@ The first thing that you have to do to use telego is [create a Telegram bot](htt
 Once you have the token, you can initialise your bot doing:
 
 ```go
-bot = telego.Initialise("110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw")
+bot = telego.Initialise("110201543:testTraceToken")
 ```
 
 This method is going to initialise the basics to make the bot work. At this point, your bot is not going to be able to read any message. In order to get messages from Telegram, there are different ways of [getting updates](https://core.telegram.org/bots/api#getting-updates), this bot (for now) only supports long polling. To start the long poll, you will need to execute the `Listen` metho that it's available from the `Telego` structure:
 
 ```go
-bot = telego.Initialise("110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw")
+bot = telego.Initialise("110201543:testTraceToken")
 bot.Listen()
 ```
 
@@ -65,7 +65,7 @@ import (
 )
 
 func main() {
-	bot := telego.Initialise("110201543:AAHdqTcvCH1vGWJxfSeofSAs0K5PALDsaw")
+	bot := telego.Initialise("110201543:testTraceToken")
 
 	bot.AddKindHandler(kind.Location, locationHandler)
 	bot.Listen()
@@ -79,8 +79,77 @@ func locationHandler(u api.Update, c telego.Conversation) telego.FlowStep {
 ```
 
 And this is the output that we are going to have from our bot:
+
 ![](_img/doc_kind_handler.jpeg)
 
 #### Command handler
 
+The normal way of starting an interaction with a bot are [commands](https://core.telegram.org/bots#commands). In order to set a handler for commands, we will need to call `AddCommandHandlder`.
+
+This example shows how to handle the `/test` command:
+
+```go
+package main
+
+import (
+	"github.com/davilag/telego"
+	"github.com/davilag/telego/api"
+)
+
+func main() {
+	bot := telego.Initialise("110201543:testTraceToken")
+
+	bot.AddCommandHandlder("test", commandHandler)
+	bot.Listen()
+}
+
+func commandHandler(u api.Update, c telego.Conversation) telego.FlowStep {
+	c.SendMessage("¯Not sure what to do...")
+	return nil
+}
+
+```
+
+And this is the result of interacting with the bot:
+
+![](_img/doc_command_handler.jpeg)
+
 #### Default handler
+
+With Telego you also have the ability to react by default to any message. This is usually used to show the user a help message, for example to show them all the commands that you have. To initialise the default handler, you will need to use `SetDefaultMessageHandler`.
+
+This default handler will be the last option of the bot in order to respond to the user's message. This is, if the message is compilant with another other defined handler (eg. kind or command), then this handler is not going to be executed.
+
+On this example, we are going to be handling three kinds of messages, a `/test` command message, a `/help` command message and a default message which is going to show the help information:
+
+```go
+package main
+
+import (
+	"github.com/davilag/telego"
+	"github.com/davilag/telego/api"
+)
+
+func main() {
+	bot := telego.Initialise("110201543:testTraceToken")
+	bot.SetDefaultMessageHandler(helpCommand)
+	bot.AddCommandHandlder("test", testCommand)
+	bot.AddCommandHandlder("help", helpCommand)
+	bot.Listen()
+}
+
+func helpCommand(u api.Update, c telego.Conversation) telego.FlowStep {
+	c.SendMessage(`This are the different commands that this bot accepts:
+		/test - Executes the test command.
+		/help - Will show the help text.`)
+	return nil
+}
+
+func testCommand(u api.Update, c telego.Conversation) telego.FlowStep {
+	c.SendMessage("Executing the test command!")
+	return nil
+}
+```
+
+This configuration has the next output:
+![](_img/doc_default_handler.jpeg)
