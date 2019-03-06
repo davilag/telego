@@ -57,7 +57,7 @@ func (s *sessionManager) manageChannels() {
 	}
 }
 
-// Method to manage an update comming from the telegram API
+// Method to manage an update coming from the telegram API
 func (s *sessionManager) manageUpdate(u api.Update) {
 	chatID := u.Message.Chat.ID
 	v, ok := s.channels[chatID]
