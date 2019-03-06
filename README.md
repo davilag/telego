@@ -1,7 +1,7 @@
 # Telego
 
 [![CircleCI](https://circleci.com/gh/davilag/telego.svg?style=shield)](https://circleci.com/gh/davilag/telego)
-[![Go Report Card](https://goreportcard.com/badge/github.com/davilag/telego)](https://goreportcard.com/badge/github.com/davilag/telego)
+[![Go Report Card](https://goreportcard.com/badge/github.com/davilag/telego)](https://goreportcard.com/report/github.com/davilag/telego)
 [![GoDoc](https://godoc.org/github.com/davilag/telego?status.svg)](https://godoc.org/github.com/davilag/telego)
 
 Telego is a Go framework for Telegram bots. It helps you building Telegram applications interacting with the [Telegram Bot API](https://core.telegram.org/bots/api) for you. It also gives you tools like flows which gives you the abiity to define steps for specific messages from the users.
