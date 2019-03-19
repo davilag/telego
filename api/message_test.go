@@ -96,3 +96,46 @@ func TestMessage_GetKind(t *testing.T) {
 		}
 	}
 }
+
+func TestMessage_getCommandEntity(t *testing.T) {
+	noCommandEntities := []api.MessageEntity{
+		{
+			Type: "message",
+		},
+	}
+
+	commandCommandEntities := []api.MessageEntity{
+		{
+			Type:   "bot_command",
+			Offset: 0,
+			Length: 8,
+		},
+	}
+
+	tests := []struct {
+		m api.Message
+		c string
+	}{
+		{
+			m: api.Message{
+				Text:     "This is not a command",
+				Entities: &noCommandEntities,
+			},
+			c: "",
+		},
+		{
+			m: api.Message{
+				Text:     "/command",
+				Entities: &commandCommandEntities,
+			},
+			c: "command",
+		},
+	}
+
+	for _, test := range tests {
+		c := test.m.GetCommand()
+		if test.c != c {
+			t.Fatalf("Expected to be %s, but got %s", test.c, c)
+		}
+	}
+}
