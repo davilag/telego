@@ -57,7 +57,7 @@ func (s *sessionManager) manageChannels() {
 	}
 }
 
-// Method to manage an update comming from the telegram API
+// Method to manage an update coming from the telegram API
 func (s *sessionManager) manageUpdate(u api.Update) {
 	chatID := u.Message.Chat.ID
 	v, ok := s.channels[chatID]
@@ -125,7 +125,7 @@ func (s *sessionManager) startConversation(u api.Update) chan api.Update {
 		cu = make(chan api.Update)
 		s.channels[u.Message.Chat.ID] = cu
 	}
-	c := NewConversation(u.Message.Chat.ID, f, cu, s.exit, s.telego)
+	c := newConversation(u.Message.Chat.ID, f, cu, s.exit, s.telego)
 
 	// If the channel hasn't been created, we just execute the
 	// handler for that update.
