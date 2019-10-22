@@ -153,3 +153,7 @@ func testCommand(u api.Update, c telego.Conversation) telego.FlowStep {
 
 This configuration has the next output:
 ![](_img/doc_default_handler.jpeg)
+
+## TODO List
+- [ ] Expand client to support more Telegram API features
+- [ ] Implement more unit tests
