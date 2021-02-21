@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
 	"net/http"
 	"strconv"
@@ -96,54 +95,41 @@ func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, key
 	return c.SendMessage(m)
 }
 
-func (c *TelegramClient) SendVideo(fileName string, chatID int) (api.Message, error) {
-	log.Println("We have received the video in telego")
+// SendVideo gets the filename and the slice of bytes with the contents of the file and sends it to
+// the provided chat.
+func (c *TelegramClient) SendVideo(fileName string, file []byte, chatID int) (api.Message, error) {
+	// Defining the body of the request
 	var b bytes.Buffer
 	w := multipart.NewWriter(&b)
+
+	// Setting the chat id value
 	chatIDWriter, err := w.CreateFormField("chat_id")
 	if err != nil {
 		return api.Message{}, err
 	}
-
 	_, err = io.Copy(chatIDWriter, strings.NewReader(strconv.Itoa(chatID)))
 	if err != nil {
 		return api.Message{}, err
 	}
 
+	// Sending the file
 	fileWriter, err := w.CreateFormFile("video", fileName)
 	if err != nil {
 		return api.Message{}, err
 	}
-
-	_, err = io.Copy(fileWriter, strings.NewReader(strconv.Itoa(chatID)))
+	_, err = io.Copy(fileWriter, bytes.NewReader(file))
 	if err != nil {
 		return api.Message{}, err
 	}
 
 	w.Close()
-	fmt.Println("Closed")
 	// We set the chat ID
 	ep := fmt.Sprintf("%v%v%v", telegramHost, c.AccessToken, sendVideo)
 	resp, err := http.Post(ep, w.FormDataContentType(), &b)
 	if err != nil {
 		return api.Message{}, err
 	}
-	defer resp.Body.Close()
-
-	var body api.TelegramResponse
-	json.NewDecoder(resp.Body).Decode(&body)
-
-	if !body.Ok {
-		return api.Message{}, errors.New(body.Description)
-	}
-	addMessageSentMetric()
-	var m api.Message
-
-	err = mapstructure.Decode(body.Result, &m)
-	if err != nil {
-		return api.Message{}, err
-	}
-	return m, nil
+	return decodeMessageFromResponse(resp)
 }
 
 // SendMessage sends a message with the filled MessageOut object.
@@ -159,6 +145,10 @@ func (c *TelegramClient) SendMessage(mo api.MessageOut) (api.Message, error) {
 	if err != nil {
 		return api.Message{}, err
 	}
+	return decodeMessageFromResponse(resp)
+}
+
+func decodeMessageFromResponse(resp *http.Response) (api.Message, error) {
 	defer resp.Body.Close()
 
 	var body api.TelegramResponse
@@ -170,7 +160,7 @@ func (c *TelegramClient) SendMessage(mo api.MessageOut) (api.Message, error) {
 	addMessageSentMetric()
 	var m api.Message
 
-	err = mapstructure.Decode(body.Result, &m)
+	err := mapstructure.Decode(body.Result, &m)
 	if err != nil {
 		return api.Message{}, err
 	}
