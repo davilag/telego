@@ -1,6 +1,8 @@
 package telego
 
 import (
+	"log"
+
 	"github.com/davilag/telego/api"
 	"github.com/davilag/telego/kind"
 	"github.com/davilag/telego/metrics"
@@ -26,6 +28,7 @@ var (
 // Initialise inits the telegram instance with the telegram bot access token.
 // See https://core.telegram.org/bots/api#authorizing-your-bot
 func Initialise(accessToken string) *Telego {
+	log.Println("Local telego")
 	client := TelegramClient{
 		AccessToken: accessToken,
 	}

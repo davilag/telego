@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/davilag/telego/api"
@@ -92,7 +93,7 @@ func TestMessage_GetKind(t *testing.T) {
 	for _, test := range tests {
 		testK := test.m.GetKind()
 		if test.k != testK {
-			t.Fatalf("Expected to be %s, but got %s", string(test.k), string(testK))
+			t.Fatalf("Expected to be %s, but got %s", fmt.Sprint(test.k), fmt.Sprint(testK))
 		}
 	}
 }

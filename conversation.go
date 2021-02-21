@@ -43,6 +43,11 @@ func (c *Conversation) SendMessageWithKeyboard(m string, keyboardOptions []strin
 	return c.client.SendMessageWithKeyboard(m, c.ChatID, keyboardOptions)
 }
 
+// SendVideo sends a video to the conversation given the filename and the file contents
+func (c *Conversation) SendVideo(fileName string, file []byte) (api.Message, error) {
+	return c.client.SendVideo(fileName, file, c.ChatID)
+}
+
 // This execution executes only one step, it doesn't create a session
 func (c *Conversation) executeUpdate(u api.Update) FlowStep {
 	return c.Flow.ActualStep(u, *c)
