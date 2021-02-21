@@ -1,6 +1,6 @@
 # Telego
 
-[![CircleCI](https://circleci.com/gh/davilag/telego.svg?style=shield)](https://circleci.com/gh/davilag/telego)
+[![GitHubActions](https://github.com/davilag/telego/actions/workflows/go.yml/badge.svg)](https://github.com/davilag/telego/actions/workflows/go.yml/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/davilag/telego)](https://goreportcard.com/report/github.com/davilag/telego)
 [![GoDoc](https://godoc.org/github.com/davilag/telego?status.svg)](https://godoc.org/github.com/davilag/telego)
 
