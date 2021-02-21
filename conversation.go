@@ -43,6 +43,10 @@ func (c *Conversation) SendMessageWithKeyboard(m string, keyboardOptions []strin
 	return c.client.SendMessageWithKeyboard(m, c.ChatID, keyboardOptions)
 }
 
+func (c *Conversation) SendVideo(f string) (api.Message, error) {
+	return c.client.SendVideo(f, c.ChatID)
+}
+
 // This execution executes only one step, it doesn't create a session
 func (c *Conversation) executeUpdate(u api.Update) FlowStep {
 	return c.Flow.ActualStep(u, *c)

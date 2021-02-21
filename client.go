@@ -5,8 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
+	"mime/multipart"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/davilag/telego/api"
 	"github.com/mitchellh/mapstructure"
@@ -15,6 +20,7 @@ import (
 const (
 	getUpdates  = "/getUpdates?offset="
 	sendMessage = "/sendMessage"
+	sendVideo   = "/sendVideo"
 )
 
 // TelegramClient manages the connection to the Telegram API
@@ -88,6 +94,56 @@ func (c *TelegramClient) SendMessageWithKeyboard(message string, chatID int, key
 	m.ReplyMarkup = rkm
 
 	return c.SendMessage(m)
+}
+
+func (c *TelegramClient) SendVideo(fileName string, chatID int) (api.Message, error) {
+	log.Println("We have received the video in telego")
+	var b bytes.Buffer
+	w := multipart.NewWriter(&b)
+	chatIDWriter, err := w.CreateFormField("chat_id")
+	if err != nil {
+		return api.Message{}, err
+	}
+
+	_, err = io.Copy(chatIDWriter, strings.NewReader(strconv.Itoa(chatID)))
+	if err != nil {
+		return api.Message{}, err
+	}
+
+	fileWriter, err := w.CreateFormFile("video", fileName)
+	if err != nil {
+		return api.Message{}, err
+	}
+
+	_, err = io.Copy(fileWriter, strings.NewReader(strconv.Itoa(chatID)))
+	if err != nil {
+		return api.Message{}, err
+	}
+
+	w.Close()
+	fmt.Println("Closed")
+	// We set the chat ID
+	ep := fmt.Sprintf("%v%v%v", telegramHost, c.AccessToken, sendVideo)
+	resp, err := http.Post(ep, w.FormDataContentType(), &b)
+	if err != nil {
+		return api.Message{}, err
+	}
+	defer resp.Body.Close()
+
+	var body api.TelegramResponse
+	json.NewDecoder(resp.Body).Decode(&body)
+
+	if !body.Ok {
+		return api.Message{}, errors.New(body.Description)
+	}
+	addMessageSentMetric()
+	var m api.Message
+
+	err = mapstructure.Decode(body.Result, &m)
+	if err != nil {
+		return api.Message{}, err
+	}
+	return m, nil
 }
 
 // SendMessage sends a message with the filled MessageOut object.
