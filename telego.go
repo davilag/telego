@@ -12,7 +12,7 @@ import (
 type Telego struct {
 	defaultHandler FlowStep           // Default handler which is going to be executed for those messages that don't have any flow assigned
 	kindFlows      map[kind.Kind]Flow // Flows that are going to be executed based on the kind of the message
-	commandFlows   map[string]Flow    // Flows that are goingto be executed based on the command that the message has
+	commandFlows   map[string]Flow    // Flows that are going to be executed based on the command that the message has
 	updates        chan api.Update    // Channel on which we have to send the updates to be processed
 	Client         TelegramClient     // Client allows send messages to Telegram chats
 }
@@ -65,15 +65,15 @@ func (t *Telego) AddKindHandlerSession(k kind.Kind, fs FlowStep, ttl int32) {
 	t.kindFlows[k] = f
 }
 
-// AddCommandHandlder adds the step that it is going to be executed when we receive a certain command
-func (t *Telego) AddCommandHandlder(c string, fs FlowStep) {
-	t.AddCommandHanlderSession(c, fs, 0)
+// AddCommandHandler adds the step that it is going to be executed when we receive a certain command
+func (t *Telego) AddCommandHandler(c string, fs FlowStep) {
+	t.AddCommandHandlerSession(c, fs, 0)
 }
 
-// AddCommandHanlderSession adds the step that it is going to be executed when we receive
+// AddCommandHandlerSession adds the step that it is going to be executed when we receive
 // a message certain command, keeping the information that the handler saves for the
 // time defined in ttl
-func (t *Telego) AddCommandHanlderSession(c string, fs FlowStep, ttl int32) {
+func (t *Telego) AddCommandHandlerSession(c string, fs FlowStep, ttl int32) {
 	f := Flow{
 		ActualStep: fs,
 		TimeToLive: ttl,
@@ -81,7 +81,7 @@ func (t *Telego) AddCommandHanlderSession(c string, fs FlowStep, ttl int32) {
 	t.commandFlows[c] = f
 }
 
-// Listen main loop which is goint to be listening for updates.
+// Listen main loop which is going to be listening for updates.
 func (t *Telego) Listen() {
 	var offset int
 	fetch := true
