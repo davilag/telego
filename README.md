@@ -84,7 +84,7 @@ And this is the output that we are going to have from our bot:
 
 ### Command handler
 
-The normal way of starting an interaction with a bot are [commands](https://core.telegram.org/bots#commands). In order to set a handler for commands, we will need to call `AddCommandHandlder`.
+The normal way of starting an interaction with a bot are [commands](https://core.telegram.org/bots#commands). In order to set a handler for commands, we will need to call `AddCommandHandler`.
 
 This example shows how to handle the `/test` command:
 
@@ -99,7 +99,7 @@ import (
 func main() {
 	bot := telego.Initialise("110201543:testTraceToken")
 
-	bot.AddCommandHandlder("test", commandHandler)
+	bot.AddCommandHandler("test", commandHandler)
 	bot.Listen()
 }
 
@@ -133,8 +133,8 @@ import (
 func main() {
 	bot := telego.Initialise("110201543:testTraceToken")
 	bot.SetDefaultMessageHandler(helpCommand)
-	bot.AddCommandHandlder("test", testCommand)
-	bot.AddCommandHandlder("help", helpCommand)
+	bot.AddCommandHandler("test", testCommand)
+	bot.AddCommandHandler("help", helpCommand)
 	bot.Listen()
 }
 
